@@ -12,3 +12,13 @@ Usage
 * **/camera distance reset** - Reset the camera distance to the default
 * **/camera info** - show the current settings for the camera distance
 
+Updating
+-------
+
+The plugin uses pattern matching to find offsets at runtime. See [MQ2Camera.cpp](/MQ2Camera.cpp) for more info.
+
+
+Screenshot
+----------
+
+![Screenshot of MQ2Camera in use to zoom the camera out really far](/screenshot.png?raw=true)

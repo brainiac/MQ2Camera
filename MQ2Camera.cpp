@@ -187,14 +187,14 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	}
 	else {
 		WriteChatf(PLUGIN_MSG "Usage:");
-		WriteChatf(PLUGIN_MSG "\ag/camera distance [reset | <distance> ]\ax - set camera max distance or reset to default");
+		WriteChatf(PLUGIN_MSG "\ag/camera distance [ reset | <distance> ]\ax - set camera max distance or reset to default");
 		WriteChatf(PLUGIN_MSG "\ag/camera info\ax - report current camera information");
 	}
 }
 
 PLUGIN_API VOID InitializePlugin(VOID)
 {
-	WriteChatf(PLUGIN_MSG "v1.0 by brainiac (\aohttp://github.com/brainiac/MQ2Camera\ax)");
+	WriteChatf(PLUGIN_MSG "v1.0 by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)");
 
 	if (!InitValues()) {
 		WriteChatf(PLUGIN_MSG "\arFailed to initialize offsets. Plugin will not function.");
