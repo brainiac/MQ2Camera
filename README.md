@@ -8,9 +8,11 @@ Currently this provides a distance option that lets you zoom the camera further 
 Usage
 -----
 
-* **/camera distance _distance_** - Set a new maximum distance. Cannot be lower than the default max camera distance.
-* **/camera distance reset** - Reset the camera distance to the default
+* **/camera distance _distance_ [save]** - Set a new maximum distance. Cannot be lower than the default max camera distance.
+* **/camera distance reset [save]** - Reset the camera distance to the default
 * **/camera info** - show the current settings for the camera distance
+
+If **save** is specified in a command, the value will be written to the INI file and automatically applied the next time the plugin is loaded.
 
 Updating
 -------

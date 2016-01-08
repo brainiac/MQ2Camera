@@ -159,6 +159,25 @@ void SetCameraDistance(float distance)
 	}
 }
 
+void SaveCameraDistance(float distance)
+{
+	char szValue[256];
+	sprintf_s(szValue, "%.2f", distance);
+
+	WritePrivateProfileString("MQ2Camera", "MaxDistance", szValue, INIFileName);
+}
+
+float LoadCameraDistance()
+{
+	char szValue[256] = { 0 };
+
+	GetPrivateProfileString("MQ2Camera", "MaxDistance", "", szValue, 256, INIFileName);
+
+	float fValue = 0.0;
+	sscanf(szValue, "%f", &fValue);
+
+	return fValue;
+}
 
 VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 {
@@ -174,10 +193,17 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	GetArg(Param, szLine, 2);
 
 	if (!stricmp(Command, "distance")) {
-		if (!stricmp(Command, "reset"))
+		bool reset = !stricmp(Command, "reset");
+		if (reset)
 			ResetCameraDistance();
 		else
 			SetCameraDistance(static_cast<float>(atof(Param)));
+
+		// check to see if we want to save
+		GetArg(Command, szLine, 3);
+		if (!stricmp(Command, "save")) {
+			SaveCameraDistance(reset ? 0.0f : static_cast<float>(atof(Param)));
+		}
 	}
 	else if (!stricmp(Command, "info")) {
 		WriteChatf(PLUGIN_MSG "Zoom camera max distance: \ay%.2f\ax (default: %.2f)",
@@ -187,7 +213,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	}
 	else {
 		WriteChatf(PLUGIN_MSG "Usage:");
-		WriteChatf(PLUGIN_MSG "\ag/camera distance [ reset | <distance> ]\ax - set camera max distance or reset to default");
+		WriteChatf(PLUGIN_MSG "\ag/camera distance [ reset | <distance> ] [ save ]\ax - set camera max distance or reset to default. Specify 'save' to save the value");
 		WriteChatf(PLUGIN_MSG "\ag/camera info\ax - report current camera information");
 	}
 }
@@ -206,6 +232,10 @@ PLUGIN_API VOID InitializePlugin(VOID)
 		s_initialized = true;
 
 		WriteChatf(PLUGIN_MSG "Type \ag/camera\ax for more information");
+
+		float distance = LoadCameraDistance();
+		if (distance > 1.0)
+			SetCameraDistance(distance);
 	}
 }
 
