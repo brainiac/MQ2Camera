@@ -174,7 +174,7 @@ float LoadCameraDistance()
 	GetPrivateProfileString("MQ2Camera", "MaxDistance", "", szValue, 256, INIFileName);
 
 	float fValue = 0.0;
-	sscanf(szValue, "%f", &fValue);
+	sscanf_s(szValue, "%f", &fValue);
 
 	return fValue;
 }
@@ -192,8 +192,8 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	CHAR Param[MAX_STRING];
 	GetArg(Param, szLine, 2);
 
-	if (!stricmp(Command, "distance")) {
-		bool reset = !stricmp(Command, "reset");
+	if (!_stricmp(Command, "distance")) {
+		bool reset = !_stricmp(Command, "reset");
 		if (reset)
 			ResetCameraDistance();
 		else
@@ -201,11 +201,11 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 
 		// check to see if we want to save
 		GetArg(Command, szLine, 3);
-		if (!stricmp(Command, "save")) {
+		if (!_stricmp(Command, "save")) {
 			SaveCameraDistance(reset ? 0.0f : static_cast<float>(atof(Param)));
 		}
 	}
-	else if (!stricmp(Command, "info")) {
+	else if (!_stricmp(Command, "info")) {
 		WriteChatf(PLUGIN_MSG "Zoom camera max distance: \ay%.2f\ax (default: %.2f)",
 			*ZoomCameraMaxDistance, s_origZoomCameraMaxDistance);
 		WriteChatf(PLUGIN_MSG "User camera max distance: \ay%.2f\ax (default: %.2f)",
