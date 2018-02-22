@@ -20,87 +20,76 @@ namespace
 
 	bool s_initialized = false;
 
-	//.text:00551602 loc_551602:                             ; CODE XREF: CEverQuest::MouseWheelScrolled(int)+50j
-	//.text:00551602                 mov     eax, dword_F3B5CC
-	//.text:00551607                 fld     dword ptr [eax+34h]
-	//.text:0055160A                 fstp    [esp+20h+var_1C]
-	//.text:0055160E                 fld     ds:flt_AA9D9C
-	//.text:00551614                 fstp    [esp+20h+var_18]
-	//.text:00551618                 fld     ds:float const g_fMaxZoomCameraDistance
-	//.text:0055161E                 fstp    [esp+20h+var_14]
-	//.text:00551622                 call    sub_5EAAF0
-	//.text:00551627                 mov     eax, [eax+868h]
-	//.text:0055162D                 push    eax
-	//.text:0055162E                 call    sub_877D00
-	//.text:00551633                 add     esp, 4
-	//.text:00551636                 test    al, al
-	//.text:00551638                 jz      short loc_551644
-	//.text:0055163A                 fld     ds:flt_AB9D1C
-	//.text:00551640                 fstp    [esp+20h+var_14]
+	//.text:006646B1 loc_6646B1:                             ; CODE XREF: CEverQuest::MouseWheelScrolled(int)+4D↑j
+	//.text:006646B1                 mov     eax, dword_F32A3C
+	//.text:006646B6                 fld     dword ptr [eax+34h]
+	//.text:006646B9                 fstp    [esp+20h+var_1C]
+	//.text:006646BD                 fld     ds:flt_ABEFC4
+	//.text:006646C3                 fstp    [esp+20h+var_18]
+	//.text:006646C7                 fld     ds:float const g_fMaxZoomCameraDistance <--
+	//.text:006646CD                 fstp    [esp+20h+var_14]
+	//.text:006646D1                 call    sub_6F7F50
+	//.text:006646D6                 push    dword ptr [eax+868h]
+	//.text:006646DC                 call    sub_986DD0
+	//.text:006646E1                 add     esp, 4
+	//.text:006646E4                 test    al, al
+	//.text:006646E6                 jz      short loc_6646F2
+	//.text:006646E8                 fld     ds:flt_AD1D1C
+	//.text:006646EE                 fstp    [esp+20h+var_14]
 
-	// 00AB9D20 12-14-2016
-	const char* ZoomCameraMaxDistance_Mask = "x????xxxxxxxxx????xxxxxx????xxxxx????xxxxxxxx????xxxxxx?xx????xxxx";
-	const unsigned char* ZoomCameraMaxDistance_Pattern = (const unsigned char*)"\xa1\x00\x00\x00\x00\xd9\x40\x34\xd9\x5c\x24\x04\xd9\x05\x00\x00\x00\x00\xd9\x5c\x24\x08\xd9\x05\x00\x00\x00\x00\xd9\x5c\x24\x0c\xe8\x00\x00\x00\x00\x8b\x80\x68\x08\x00\x00\x50\xe8\x00\x00\x00\x00\x83\xc4\x04\x84\xc0\x74\x00\xd9\x05\x00\x00\x00\x00\xd9\x5c\x24\x0c";
-	const int ZoomCameraMaxDistance_Offset = (0x551618 + 2) - 0x551602;
+	// 0x6646b1 02-21-2018
+	const char* ZoomCameraMaxDistance_Mask = "x????xxxxxxxxx????xxxxxx????xxxxx????";
+	const unsigned char* ZoomCameraMaxDistance_Pattern = (const unsigned char*)"\xA1\x00\x00\x00\x00\xD9\x40\x34\xD9\x5C\x24\x04\xD9\x05\x00\x00\x00\x00\xD9\x5C\x24\x08\xD9\x05\x00\x00\x00\x00\xD9\x5C\x24\x0C\xE8\x00\x00\x00\x00";
+	const int ZoomCameraMaxDistance_Offset = (0x6646C7 + 2) - 0x6646B1;
 	float* ZoomCameraMaxDistance = 0;
 
-	//.text:007DF530 public: virtual void __thiscall EQChaseCamera::UpdateCamera(class PlayerClient *) proc near
-	//.text:007DF530                 mov     eax, CEverQuest * EverQuestObject
-	//.text:007DF535                 sub     esp, 28h
-	//.text:007DF538                 cmp     dword ptr [eax+5C8h], 5
-	//.text:007DF53F                 push    ebx
-	//.text:007DF540                 push    ebp
-	//.text:007DF541                 push    esi
-	//.text:007DF542                 mov     esi, [esp+34h+arg_0]
-	//.text:007DF546                 push    edi
-	//.text:007DF547                 mov     edi, ecx
-	//.text:007DF549                 jnz     short loc_7DF590
-	//.text:007DF54B                 fld     ds:float const g_fMaxCameraDistance <--
-	//.text:007DF551                 fcom    dword ptr [edi+34h]
-	//.text:007DF554                 fnstsw  ax
-	//.text:007DF556                 test    ah, 5
-	//.text:007DF559                 jp      short loc_7DF560
-	//.text:007DF55B                 fstp    dword ptr [edi+34h]
-	//.text:007DF55E                 jmp     short loc_7DF562
+	//.text:008E8CB0 public: virtual void __thiscall EQChaseCamera::UpdateCamera(class PlayerClient *) proc near
+	//.text:008E8CB0                 mov     eax, CEverQuest * EverQuestObject
+	//.text:008E8CB5                 sub     esp, 2Ch
+	//.text:008E8CB8                 cmp     dword ptr [eax+5C8h], 5
+	//.text:008E8CBF                 push    esi
+	//.text:008E8CC0                 push    edi
+	//.text:008E8CC1                 mov     edi, [esp+34h+arg_0]
+	//.text:008E8CC5                 mov     esi, ecx
+	//.text:008E8CC7                 jnz     short loc_8E8D0E
+	//.text:008E8CC9                 fld     ds:float const g_fMaxCameraDistance <--
+	//.text:008E8CCF                 fcom    dword ptr [esi+34h]
+	//.text:008E8CD2                 fnstsw  ax
+	//.text:008E8CD4                 test    ah, 5
+	//.text:008E8CD7                 jp      short loc_8E8CDE
+	//.text:008E8CD9                 fstp    dword ptr [esi+34h]
+	//.text:008E8CDC                 jmp     short loc_8E8CE0
 
-	// 0xAFDEF0 12-09-2015
-	const char* UserCameraMaxDistance_Mask = "x????xxxxxxxxxxxxxxxxxxxxx?xx????xxxxxxxxx?xxxx?";
-	const unsigned char* UserCameraMaxDistance_Pattern = (const unsigned char*)"\xa1\x00\x00\x00\x00\x83\xec\x28\x83\xb8\xc8\x05\x00\x00\x05\x53\x55\x56\x8b\x74\x24\x38\x57\x8b\xf9\x75\x00\xd9\x05\x00\x00\x00\x00\xd8\x57\x34\xdf\xe0\xf6\xc4\x05\x7a\x00\xd9\x5f\x34\xeb\x00";
-	const int UserCameraMaxDistance_Offset = (0x7DF54B + 2) - 0x7DF530;
+	// 0x8e8cb0 02-21-2018
+	const char* UserCameraMaxDistance_Mask = "x????xxxxx?????xxxxxxxxxxxx????xxx";
+	const unsigned char* UserCameraMaxDistance_Pattern = (const unsigned char*)"\xA1\x00\x00\x00\x00\x83\xEC\x2C\x83\xB8\x00\x00\x00\x00\x00\x56\x57\x8B\x7C\x24\x38\x8B\xF1\x75\x45\xD9\x05\x00\x00\x00\x00\xD8\x56\x34";
+	const int UserCameraMaxDistance_Offset = (0x8E8CC9 + 2) - 0x8E8CB0;
 	float* UserCameraMaxDistance = 0;
 
-	//.text:00463CA0     public: void __thiscall CDisplay::SetViewActor(class CActorInterface *) proc near
-	//.text:004B2270                 sub     esp, 18h
-	//.text:004B2273                 push    esi
-	//.text:004B2274                 mov     esi, ecx
-	//.text:004B2276                 mov     ecx, CActorInterface * ViewActor
-	//.text:004B227C                 test    ecx, ecx
-	//.text:004B227E                 jz      short loc_4B2289
-	//.text:004B2280                 mov     eax, [ecx]
-	//.text:004B2282                 mov     edx, [eax+34h]
-	//.text:004B2285                 push    0
-	//.text:004B2287                 call    edx
-	//.text:004B2289
-	//.text:004B2289 loc_4B2289:                             ; CODE XREF: CDisplay::SetViewActor(CActorInterface *)+Ej
-	//.text:004B2289                 mov     ecx, [esp+1Ch+arg_0]
-	//.text:004B228D                 mov     CActorInterface * ViewActor, ecx
-	//.text:004B2293                 test    ecx, ecx
-	//.text:004B2295                 jz      short loc_4B230C
-	//.text:004B2297                 mov     eax, [ecx]
-	//.text:004B2299                 mov     eax, [eax+80h]
-	//.text:004B229F                 lea     edx, [esp+1Ch+var_18]
-	//.text:004B22A3                 push    edx
-	//.text:004B22A4                 call    eax
-	//.text:004B22A6                 mov     ecx, CActorInterface * ViewActor
-	//.text:004B22AC                 mov     edx, [ecx]
-	//.text:004B22AE                 mov     edx, [edx+84h]
-	//.text:004B22B4                 lea     eax, [esp+1Ch+var_C]
-	//.text:004B22B8                 push    eax
-	//.text:004B22B9                 call    edx
+	//.text:005C5B20 public: void __thiscall CDisplay::SetViewActor(class CActorInterface *) proc near
+	//.text:005C5B20                 sub     esp, 18h
+	//.text:005C5B23                 push    esi
+	//.text:005C5B24                 mov     esi, ecx
+	//.text:005C5B26                 mov     ecx, CActorInterface * ViewActor
+	//.text:005C5B2C                 test    ecx, ecx
+	//.text:005C5B2E                 jz      short loc_5C5B37
+	//.text:005C5B30                 mov     eax, [ecx]
+	//.text:005C5B32                 push    0
+	//.text:005C5B34                 call    dword ptr [eax+34h]
+	//.text:005C5B37
+	//.text:005C5B37 loc_5C5B37:                             ; CODE XREF: CDisplay::SetViewActor(CActorInterface *)+E↑j
+	//.text:005C5B37                 mov     ecx, [esp+1Ch+arg_0]
+	//.text:005C5B3B                 mov     CActorInterface * ViewActor, ecx
+	//.text:005C5B41                 test    ecx, ecx
+	//.text:005C5B43                 jz      short loc_5C5BB2
+	//.text:005C5B45                 mov     eax, [ecx]
+	//.text:005C5B47                 lea     edx, [esp+1Ch+var_18]
+	//.text:005C5B4B                 push    edx
+	//.text:005C5B4C                 call    dword ptr [eax+80h]
 
-	// 0x463CA0 12-22-2016
-	const char* SetViewActor_Mask = "xxxxxxxx????xxx?xxxxxxxxxxxxxxx????xxx?xxxxxxxxxxxxxxxxx????xxxxxxxxxxxxxxx";
-	const unsigned char* SetViewActor_Pattern = (const unsigned char*)"\x83\xec\x18\x56\x8b\xf1\x8b\x0d\x00\x00\x00\x00\x85\xc9\x74\x00\x8b\x01\x8b\x50\x34\x6a\x00\xff\xd2\x8b\x4c\x24\x20\x89\x0d\x00\x00\x00\x00\x85\xc9\x74\x00\x8b\x01\x8b\x80\x80\x00\x00\x00\x8d\x54\x24\x04\x52\xff\xd0\x8b\x0d\x00\x00\x00\x00\x8b\x11\x8b\x92\x84\x00\x00\x00\x8d\x44\x24\x10\x50\xff\xd2";
+	// 0x5c5b20 02-21-2018
+	const char* SetViewActor_Mask = "xxxxxxxx????xxxxxxxxxxxxxxxxx????xxxxxxxxxx";
+	const unsigned char* SetViewActor_Pattern = (const unsigned char*)"\x83\xEC\x18\x56\x8B\xF1\x8B\x0D\x00\x00\x00\x00\x85\xC9\x74\x07\x8B\x01\x6A\x00\xFF\x50\x34\x8B\x4C\x24\x20\x89\x0D\x00\x00\x00\x00\x85\xC9\x74\x6D\x8B\x01\x8D\x54\x24\x04";
 
 	DWORD CDisplay__SetViewActor_Offset = 0;
 }
@@ -153,7 +142,7 @@ T* GetDataPtrAtOffset(DWORD address, int offset)
 
 bool InitValues()
 {
-	DWORD address = FindPattern(FixOffset(0x500000), 0x100000,
+	DWORD address = FindPattern(FixOffset(0x600000), 0x100000,
 		ZoomCameraMaxDistance_Pattern, ZoomCameraMaxDistance_Mask);
 	ZoomCameraMaxDistance = GetDataPtrAtOffset<float>(address, ZoomCameraMaxDistance_Offset);
 
@@ -162,7 +151,7 @@ bool InitValues()
 		return false;
 	}
 
-	address = FindPattern(FixOffset(0x700000), 0x100000,
+	address = FindPattern(FixOffset(0x800000), 0x100000,
 		UserCameraMaxDistance_Pattern, UserCameraMaxDistance_Mask);
 	UserCameraMaxDistance = GetDataPtrAtOffset<float>(address, UserCameraMaxDistance_Offset);
 
@@ -171,7 +160,7 @@ bool InitValues()
 		return false;
 	}
 
-	if ((CDisplay__SetViewActor_Offset = FindPattern(FixOffset(0x400000), 0x100000,
+	if ((CDisplay__SetViewActor_Offset = FindPattern(FixOffset(0x500000), 0x100000,
 		SetViewActor_Pattern, SetViewActor_Mask)) == 0) {
 		WriteChatf(PLUGIN_MSG "\arFailed to find [SetViewActor]\ax");
 		return false;
@@ -367,6 +356,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
 
 	if (!InitValues()) {
 		WriteChatf(PLUGIN_MSG "\arFailed to initialize offsets. Plugin will not function.");
+		EzCommand("/timed 1 /plugin mq2camera unload");
 	}
 	else {
 		AddCommand("/camera", Cmd_Camera);
