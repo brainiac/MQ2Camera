@@ -9,12 +9,13 @@
 #endif
 
 #include "../MQ2Plugin.h"
-PreSetup("MQ2Camera");
-
-#define PLUGIN_MSG "\ag[MQ2Camera]\ax "
 
 #include <algorithm>
 
+PreSetup("MQ2Camera");
+PLUGIN_VERSION(1.0);
+
+constexpr const char* PLUGIN_MSG = "\ag[MQ2Camera]\ax ";
 
 namespace
 {
@@ -65,7 +66,7 @@ void SetCameraDistance(float distance)
 		float userValue = std::max(distance, s_origUserCameraMaxDistance);
 		SetCameraValue(UserCameraMaxDistance, userValue);
 
-		WriteChatf(PLUGIN_MSG "Camera max distance set to \ay%.2f\ax", distance);
+		WriteChatf("%s Camera max distance set to \ay%.2f\ax", PLUGIN_MSG, distance);
 	}
 }
 
@@ -107,7 +108,7 @@ void AttachCameraToSpawn(PSPAWNINFO pSpawn)
 
 	// we need to get the actorinterface for the spawn. This is the pactorex
 	// field of ActorClient
-	T3D_tagACTORINSTANCE * actor = static_cast<T3D_tagACTORINSTANCE*>(pSpawn->mActorClient.pcactorex);
+	const auto actor = static_cast<T3D_tagACTORINSTANCE*>(pSpawn->mActorClient.pcactorex);
 
 	if (actor)
 	{
@@ -117,7 +118,7 @@ void AttachCameraToSpawn(PSPAWNINFO pSpawn)
 
 		if (attaching)
 		{
-			WriteChatf(PLUGIN_MSG "Attaching camera to \ay%s", pSpawn->Name);
+			WriteChatf("%s Attaching camera to \ay%s", PLUGIN_MSG, pSpawn->Name);
 		}
 	}
 }
@@ -126,7 +127,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 {
 	if (!s_initialized)
 	{
-		WriteChatf(PLUGIN_MSG "Plugin is disabled due to initialization error.");
+		WriteChatf("%s Plugin is disabled due to initialization error.", PLUGIN_MSG);
 		return;
 	}
 
@@ -138,7 +139,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 
 	if (!_stricmp(Command, "distance"))
 	{
-		bool reset = !_stricmp(Command, "reset");
+		const bool reset = !_stricmp(Command, "reset");
 		if (reset)
 			ResetCameraDistance();
 		else
@@ -153,9 +154,9 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	}
 	else if (!_stricmp(Command, "info"))
 	{
-		WriteChatf(PLUGIN_MSG "Zoom camera max distance: \ay%.2f\ax (default: %.2f)",
+		WriteChatf("%s Zoom camera max distance: \ay%.2f\ax (default: %.2f)", PLUGIN_MSG,
 			*ZoomCameraMaxDistance, s_origZoomCameraMaxDistance);
-		WriteChatf(PLUGIN_MSG "User camera max distance: \ay%.2f\ax (default: %.2f)",
+		WriteChatf("%s User camera max distance: \ay%.2f\ax (default: %.2f)", PLUGIN_MSG,
 			*UserCameraMaxDistance, s_origUserCameraMaxDistance);
 	}
 	else if (!_stricmp(Command, "attach"))
@@ -166,7 +167,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 			if (pTarget)
 				AttachCameraToSpawn((PSPAWNINFO)pTarget);
 			else
-				WriteChatf(PLUGIN_MSG "\arNo target to attach camera to");
+				WriteChatf("%s \arNo target to attach camera to", PLUGIN_MSG);
 		}
 		// /camera attach id #
 		else if (!_stricmp(Param, "id"))
@@ -178,7 +179,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 			if (pSpawn)
 				AttachCameraToSpawn(pSpawn);
 			else
-				WriteChatf(PLUGIN_MSG "\arCould not find spawn id '%s'", Id);
+				WriteChatf("%s \arCould not find spawn id '%s'", PLUGIN_MSG, Id);
 		}
 		// /camera attach name_of_some_spawn
 		else if (strlen(Param) > 0)
@@ -190,36 +191,36 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 			if (pSpawn)
 				AttachCameraToSpawn(pSpawn);
 			else
-				WriteChatf(PLUGIN_MSG "\arCould not find spawn named '%s'", Param);
+				WriteChatf("%s \arCould not find spawn named '%s'", PLUGIN_MSG, Param);
 		}
 		else
 		{
-			WriteChatf(PLUGIN_MSG "Resetting camera");
+			WriteChatf("%s Resetting camera", PLUGIN_MSG);
 			AttachCameraToSpawn(nullptr);
 		}
 	}
 	else if (!_stricmp(Command, "detach") || !_stricmp(Command, "reset"))
 	{
 		// reset the camera
-		WriteChatf(PLUGIN_MSG "Resetting camera");
+		WriteChatf("%s Resetting camera", PLUGIN_MSG);
 		AttachCameraToSpawn(nullptr);
 	}
 	else
 	{
-		WriteChatf(PLUGIN_MSG "Usage:");
-		WriteChatf(PLUGIN_MSG "\ag/camera distance [ reset | <distance> ] [ save ]\ax - set camera max distance or reset to default. Specify 'save' to save the value");
-		WriteChatf(PLUGIN_MSG "\ag/camera info\ax - report current camera information");
-		WriteChatf(PLUGIN_MSG "\ag/camera attach [ target | id # | <spawn name> ]\ax - attach camera to another spawn");
-		WriteChatf(PLUGIN_MSG "\ag/camera detach\ax - Reset camera attachment");
+		WriteChatf("%s Usage:", PLUGIN_MSG);
+		WriteChatf("%s \ag/camera distance [ reset | <distance> ] [ save ]\ax - set camera max distance or reset to default. Specify 'save' to save the value", PLUGIN_MSG);
+		WriteChatf("%s \ag/camera info\ax - report current camera information", PLUGIN_MSG);
+		WriteChatf("%s \ag/camera attach [ target | id # | <spawn name> ]\ax - attach camera to another spawn", PLUGIN_MSG);
+		WriteChatf("%s \ag/camera detach\ax - Reset camera attachment", PLUGIN_MSG);
 	}
 }
 
-PLUGIN_API VOID InitializePlugin(VOID)
+PLUGIN_API VOID InitializePlugin()
 {
-	WriteChatf(PLUGIN_MSG "v1.0 by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)");
+	WriteChatf("%s v%.2f by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)", PLUGIN_MSG, MQ2Version);
 
 	if (!InitValues()) {
-		WriteChatf(PLUGIN_MSG "\arFailed to initialize offsets. Plugin will not function.");
+		WriteChatf("%s \arFailed to initialize offsets. Plugin will not function.", PLUGIN_MSG);
 		EzCommand("/timed 1 /plugin mq2camera unload");
 	}
 	else
@@ -229,7 +230,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
 		AddDetour((DWORD)UserCameraMaxDistance);
 		s_initialized = true;
 
-		WriteChatf(PLUGIN_MSG "Type \ag/camera\ax for more information");
+		WriteChatf("%s Type \ag/camera\ax for more information", PLUGIN_MSG);
 
 		float distance = LoadCameraDistance();
 		if (distance > 1.0)
@@ -237,7 +238,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
 	}
 }
 
-PLUGIN_API VOID ShutdownPlugin(VOID)
+PLUGIN_API VOID ShutdownPlugin()
 {
 	if (s_initialized)
 	{
