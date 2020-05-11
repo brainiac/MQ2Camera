@@ -9,12 +9,13 @@
 #endif
 
 #include "../MQ2Plugin.h"
-PreSetup("MQ2Camera");
-
-#define PLUGIN_MSG "\ag[MQ2Camera]\ax "
 
 #include <algorithm>
 
+PreSetup("MQ2Camera");
+PLUGIN_VERSION(1.0);
+
+#define PLUGIN_MSG "\ag[MQ2Camera]\ax "
 
 namespace
 {
@@ -107,7 +108,7 @@ void AttachCameraToSpawn(PSPAWNINFO pSpawn)
 
 	// we need to get the actorinterface for the spawn. This is the pactorex
 	// field of ActorClient
-	T3D_tagACTORINSTANCE * actor = static_cast<T3D_tagACTORINSTANCE*>(pSpawn->mActorClient.pcactorex);
+	const auto actor = static_cast<T3D_tagACTORINSTANCE*>(pSpawn->mActorClient.pcactorex);
 
 	if (actor)
 	{
@@ -138,7 +139,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 
 	if (!_stricmp(Command, "distance"))
 	{
-		bool reset = !_stricmp(Command, "reset");
+		const bool reset = !_stricmp(Command, "reset");
 		if (reset)
 			ResetCameraDistance();
 		else
@@ -214,9 +215,9 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	}
 }
 
-PLUGIN_API VOID InitializePlugin(VOID)
+PLUGIN_API VOID InitializePlugin()
 {
-	WriteChatf(PLUGIN_MSG "v1.0 by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)");
+	WriteChatf(PLUGIN_MSG "v%.2f by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)", MQ2Version);
 
 	if (!InitValues()) {
 		WriteChatf(PLUGIN_MSG "\arFailed to initialize offsets. Plugin will not function.");
@@ -237,7 +238,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
 	}
 }
 
-PLUGIN_API VOID ShutdownPlugin(VOID)
+PLUGIN_API VOID ShutdownPlugin()
 {
 	if (s_initialized)
 	{
