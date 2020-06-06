@@ -8,7 +8,7 @@
 #define NOMINMAX
 #endif
 
-#include "../MQ2Plugin.h"
+#include <mq/Plugin.h>
 
 #include <algorithm>
 
@@ -108,7 +108,7 @@ void AttachCameraToSpawn(PSPAWNINFO pSpawn)
 
 	// we need to get the actorinterface for the spawn. This is the pactorex
 	// field of ActorClient
-	const auto actor = static_cast<T3D_tagACTORINSTANCE*>(pSpawn->mActorClient.pcactorex);
+	const auto actor = static_cast<CActorInterface*>(pSpawn->mActorClient.pcactorex);
 
 	if (actor)
 	{
@@ -143,13 +143,13 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 		if (reset)
 			ResetCameraDistance();
 		else
-			SetCameraDistance(static_cast<float>(atof(Param)));
+			SetCameraDistance(GetFloatFromString(Param, 0));
 
 		// check to see if we want to save
 		GetArg(Command, szLine, 3);
 		if (!_stricmp(Command, "save"))
 		{
-			SaveCameraDistance(reset ? 0.0f : static_cast<float>(atof(Param)));
+			SaveCameraDistance(reset ? 0.0f : GetFloatFromString(Param, 0));
 		}
 	}
 	else if (!_stricmp(Command, "info"))
@@ -175,7 +175,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 			CHAR Id[MAX_STRING];
 			GetArg(Id, szLine, 3);
 
-			PSPAWNINFO pSpawn = (PSPAWNINFO)GetSpawnByID(atoi(Id));
+			PSPAWNINFO pSpawn = (PSPAWNINFO)GetSpawnByID(GetIntFromString(Id, 0));
 			if (pSpawn)
 				AttachCameraToSpawn(pSpawn);
 			else
@@ -215,7 +215,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 	}
 }
 
-PLUGIN_API VOID InitializePlugin()
+PLUGIN_API void InitializePlugin()
 {
 	WriteChatf(PLUGIN_MSG "v%.2f by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)", MQ2Version);
 
@@ -238,7 +238,7 @@ PLUGIN_API VOID InitializePlugin()
 	}
 }
 
-PLUGIN_API VOID ShutdownPlugin()
+PLUGIN_API void ShutdownPlugin()
 {
 	if (s_initialized)
 	{
