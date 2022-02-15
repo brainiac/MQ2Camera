@@ -225,8 +225,8 @@ PLUGIN_API void InitializePlugin()
 	{
 		AddCommand("/camera", Cmd_Camera);
 
-		//AddDetour(ZoomCameraMaxDistance);
-		//AddDetour(UserCameraMaxDistance);
+		PatchDetour(ZoomCameraMaxDistance);
+		PatchDetour(UserCameraMaxDistance);
 		s_initialized = true;
 
 		WriteChatf(PLUGIN_MSG "Type \ag/camera\ax for more information");
@@ -244,7 +244,7 @@ PLUGIN_API void ShutdownPlugin()
 		RemoveCommand("/camera");
 		ResetCameraDistance();
 
-		//RemoveDetour((uintptr_t)ZoomCameraMaxDistance);
-		//RemoveDetour((uintptr_t)UserCameraMaxDistance);
+		RemoveDetour(reinterpret_cast<uintptr_t>(ZoomCameraMaxDistance));
+		RemoveDetour(reinterpret_cast<uintptr_t>(UserCameraMaxDistance));
 	}
 }
