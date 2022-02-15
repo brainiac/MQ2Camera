@@ -92,14 +92,14 @@ float LoadCameraDistance()
 
 bool s_attachedCamera = false;
 
-void AttachCameraToSpawn(PSPAWNINFO pSpawn)
+void AttachCameraToSpawn(PlayerClient* pSpawn)
 {
 	bool attaching = true;
 
 	if (!pSpawn)
 	{
 		// if no spawn is provided, reset to the current player
-		pSpawn = GetCharInfo() ? GetCharInfo()->pSpawn : nullptr;
+		pSpawn = pLocalPlayer;
 		attaching = false;
 	}
 
@@ -108,11 +108,9 @@ void AttachCameraToSpawn(PSPAWNINFO pSpawn)
 
 	// we need to get the actorinterface for the spawn. This is the pactorex
 	// field of ActorClient
-	const auto actor = static_cast<CActorInterface*>(pSpawn->mActorClient.pcactorex);
-
-	if (actor)
+	if (pSpawn->mActorClient.pActor)
 	{
-		pDisplay->SetViewActor(actor);
+		pDisplay->SetViewActor(pSpawn->mActorClient.pActor);
 
 		s_attachedCamera = attaching;
 
@@ -123,7 +121,7 @@ void AttachCameraToSpawn(PSPAWNINFO pSpawn)
 	}
 }
 
-VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
+void Cmd_Camera(PlayerClient* pChar,  char* szLine)
 {
 	if (!s_initialized)
 	{
@@ -165,7 +163,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 		if (!_stricmp(Param, "target"))
 		{
 			if (pTarget)
-				AttachCameraToSpawn((PSPAWNINFO)pTarget);
+				AttachCameraToSpawn(pTarget);
 			else
 				WriteChatf(PLUGIN_MSG "\arNo target to attach camera to");
 		}
@@ -175,7 +173,7 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 			CHAR Id[MAX_STRING];
 			GetArg(Id, szLine, 3);
 
-			PSPAWNINFO pSpawn = (PSPAWNINFO)GetSpawnByID(GetIntFromString(Id, 0));
+			PlayerClient* pSpawn = GetSpawnByID(GetIntFromString(Id, 0));
 			if (pSpawn)
 				AttachCameraToSpawn(pSpawn);
 			else
@@ -185,9 +183,9 @@ VOID Cmd_Camera(PSPAWNINFO pChar, PCHAR szLine)
 		else if (strlen(Param) > 0)
 		{
 			// This behavior simulates SetViewActorByName
-			PSPAWNINFO pSpawn = (PSPAWNINFO)GetSpawnByName(Param);
+			PlayerClient* pSpawn = GetSpawnByName(Param);
 			if (!pSpawn)
-				pSpawn = (PSPAWNINFO)GetSpawnByPartialName(Param);
+				pSpawn = GetSpawnByPartialName(Param);
 			if (pSpawn)
 				AttachCameraToSpawn(pSpawn);
 			else
@@ -226,8 +224,9 @@ PLUGIN_API void InitializePlugin()
 	else
 	{
 		AddCommand("/camera", Cmd_Camera);
-		AddDetour((DWORD)ZoomCameraMaxDistance);
-		AddDetour((DWORD)UserCameraMaxDistance);
+
+		//AddDetour(ZoomCameraMaxDistance);
+		//AddDetour(UserCameraMaxDistance);
 		s_initialized = true;
 
 		WriteChatf(PLUGIN_MSG "Type \ag/camera\ax for more information");
@@ -244,7 +243,8 @@ PLUGIN_API void ShutdownPlugin()
 	{
 		RemoveCommand("/camera");
 		ResetCameraDistance();
-		RemoveDetour((DWORD)ZoomCameraMaxDistance);
-		RemoveDetour((DWORD)UserCameraMaxDistance);
+
+		//RemoveDetour((uintptr_t)ZoomCameraMaxDistance);
+		//RemoveDetour((uintptr_t)UserCameraMaxDistance);
 	}
 }
