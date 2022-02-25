@@ -17,6 +17,9 @@ PLUGIN_VERSION(1.0);
 
 #define PLUGIN_MSG "\ag[MQ2Camera]\ax "
 
+static uintptr_t addrUserCameraMaxDistance = FixEQGameOffset(__gfMaxCameraDistance_x);
+static uintptr_t addrZoomCameraMaxDistance = FixEQGameOffset(__gfMaxZoomCameraDistance_x);
+
 namespace
 {
 	float s_origZoomCameraMaxDistance = 0.0;
@@ -30,8 +33,8 @@ namespace
 
 bool InitValues()
 {
-	UserCameraMaxDistance = (float *)FixOffset(__gfMaxCameraDistance_x);
-	ZoomCameraMaxDistance = (float *)FixOffset(__gfMaxZoomCameraDistance_x);
+	UserCameraMaxDistance = (float *)addrUserCameraMaxDistance;
+	ZoomCameraMaxDistance = (float *)addrZoomCameraMaxDistance;
 
 	s_origUserCameraMaxDistance = *UserCameraMaxDistance;
 	s_origZoomCameraMaxDistance = *ZoomCameraMaxDistance;
@@ -225,8 +228,8 @@ PLUGIN_API void InitializePlugin()
 	{
 		AddCommand("/camera", Cmd_Camera);
 
-		PatchDetour(ZoomCameraMaxDistance);
-		PatchDetour(UserCameraMaxDistance);
+		PatchDetour(addrUserCameraMaxDistance);
+		PatchDetour(addrZoomCameraMaxDistance);
 		s_initialized = true;
 
 		WriteChatf(PLUGIN_MSG "Type \ag/camera\ax for more information");
@@ -244,7 +247,7 @@ PLUGIN_API void ShutdownPlugin()
 		RemoveCommand("/camera");
 		ResetCameraDistance();
 
-		RemoveDetour(reinterpret_cast<uintptr_t>(ZoomCameraMaxDistance));
-		RemoveDetour(reinterpret_cast<uintptr_t>(UserCameraMaxDistance));
+		RemoveDetour(addrUserCameraMaxDistance);
+		RemoveDetour(addrZoomCameraMaxDistance);
 	}
 }
