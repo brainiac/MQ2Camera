@@ -27,8 +27,8 @@ namespace
 
 	bool s_initialized = false;
 
-	float* ZoomCameraMaxDistance = 0;
-	float* UserCameraMaxDistance = 0;
+	float* ZoomCameraMaxDistance = nullptr;
+	float* UserCameraMaxDistance = nullptr;
 }
 
 bool InitValues()
@@ -220,7 +220,8 @@ PLUGIN_API void InitializePlugin()
 {
 	WriteChatf(PLUGIN_MSG "v%.2f by brainiac (\aohttps://github.com/brainiac/MQ2Camera\ax)", MQ2Version);
 
-	if (!InitValues()) {
+	if (!InitValues())
+	{
 		WriteChatf(PLUGIN_MSG "\arFailed to initialize offsets. Plugin will not function.");
 		EzCommand("/timed 1 /plugin mq2camera unload");
 	}
@@ -228,8 +229,8 @@ PLUGIN_API void InitializePlugin()
 	{
 		AddCommand("/camera", Cmd_Camera);
 
-		PatchDetour(addrUserCameraMaxDistance);
-		PatchDetour(addrZoomCameraMaxDistance);
+		AddPatch(addrUserCameraMaxDistance, sizeof(*UserCameraMaxDistance), "UserCameraMaxDistance");
+		AddPatch(addrZoomCameraMaxDistance, sizeof(*ZoomCameraMaxDistance), "ZoomCameraMaxDistance");
 		s_initialized = true;
 
 		WriteChatf(PLUGIN_MSG "Type \ag/camera\ax for more information");
@@ -247,7 +248,7 @@ PLUGIN_API void ShutdownPlugin()
 		RemoveCommand("/camera");
 		ResetCameraDistance();
 
-		RemoveDetour(addrUserCameraMaxDistance);
-		RemoveDetour(addrZoomCameraMaxDistance);
+		RemovePatch(addrUserCameraMaxDistance);
+		RemovePatch(addrZoomCameraMaxDistance);
 	}
 }
