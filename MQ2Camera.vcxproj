@@ -18,12 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemDefinitionGroup>
-    <PreBuildEvent>
-      <Command>if exist "$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), tools\build_scripts\Plugin_Versioning.ps1))\tools\build_scripts\Plugin_Versioning.ps1" powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), tools\build_scripts\Plugin_Versioning.ps1))\tools\build_scripts\Plugin_Versioning.ps1" -ProjectName "$(MSBuildProjectName)" -ProjectDirectory "$([MSBuild]::EnsureTrailingSlash('$(MSBuildThisFileDirectory)'))\"</Command>
-      <Message>Updating version resource for $(MSBuildProjectName)...</Message>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
   <PropertyGroup Label="Globals">
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{F96C4FD8-B3A8-4FE5-9B34-E171EF5CBA60}</ProjectGuid>
@@ -69,6 +63,12 @@
     <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), src\Plugin.props))\src\Plugin.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), src\Plugin.props))' != '' " />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Command>if exist "$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), tools\build_scripts\Plugin_Versioning.ps1))\tools\build_scripts\Plugin_Versioning.ps1" powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), tools\build_scripts\Plugin_Versioning.ps1))\tools\build_scripts\Plugin_Versioning.ps1" -ProjectName "$(MSBuildProjectName)" -ProjectDirectory "$([MSBuild]::EnsureTrailingSlash('$(MSBuildThisFileDirectory)'))\"</Command>
+      <Message>Updating version resource for $(MSBuildProjectName)...</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <PropertyGroup>
     <_ProjectFileVersion>14.0.23107.0</_ProjectFileVersion>
   </PropertyGroup>
